@@ -13,4 +13,4 @@ Metrics are collected for each drive on the PC/server, consisting of:
 
 The version of CrystalDiskInfo used in this program is **CrystalDiskInfo8_17_3**
 
-This project was created at a summer internship, I would say that this was my first ever "proper" project and I am by no means a proffessional programmer at this stage
+This project was created at a summer internship, I would say that this was my first ever "proper" project and I am by no means a professional programmer at this stage
