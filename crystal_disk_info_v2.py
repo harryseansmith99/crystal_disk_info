@@ -6,6 +6,7 @@ from prometheus_client import CollectorRegistry, Gauge, write_to_textfile
 
 def run_regexes(input_filepath, output_filepath, regex):
     """ Run a list of regex matches on an input file, and generate an output. """
+    
     results = dict()
 
     temp = dict()
@@ -26,7 +27,6 @@ def run_regexes(input_filepath, output_filepath, regex):
                             temp = dict()
                             break
 
-    
     print(temp_list)
 
     for i in temp_list:
@@ -37,16 +37,11 @@ def run_regexes(input_filepath, output_filepath, regex):
         temp["Health"] = i.get("Health")
         results[i.get("Drive")] = temp
 
-
     print("----------------")
-
     print("'results' dict ->   ", results, "\n")
 
-
     registry = CollectorRegistry()
-
     g = Gauge('drive_status', '1 if drive_status is present', registry=registry, labelnames=["drive_name", "model", "size", "temperature", "status"])
-
 
     try:
         for each_drive, drive_details in results.items():
