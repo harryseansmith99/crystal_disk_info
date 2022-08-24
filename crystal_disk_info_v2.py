@@ -6,12 +6,16 @@ from prometheus_client import CollectorRegistry, Gauge, write_to_textfile
 
 def run_regexes(input_filepath, output_filepath, regex):
     """ Run a list of regex matches on an input file, and generate an output. """
-    
     results = dict()
 
     temp = dict()
     temp_list = []
 
+
+    '''
+    open the text file created by CrystalDiskInfo, search through
+    the lines with regular expressions
+    '''
     with open(input_filepath, 'r') as extract:
         for line in extract.readlines():
             for key, reg in regex.items():
@@ -27,8 +31,10 @@ def run_regexes(input_filepath, output_filepath, regex):
                             temp = dict()
                             break
 
+    
     print(temp_list)
 
+    # create results dictionary to show what the regex found
     for i in temp_list:
         temp = dict()
         temp["Model"] = i.get("Model")
@@ -37,12 +43,20 @@ def run_regexes(input_filepath, output_filepath, regex):
         temp["Health"] = i.get("Health")
         results[i.get("Drive")] = temp
 
+
     print("----------------")
+
     print("'results' dict ->   ", results, "\n")
 
+
+    # instantiate CollectorRegistry class which returns metrics
     registry = CollectorRegistry()
+
+    # instatiate Gauge class which is used to measure metrics that can go up and down
     g = Gauge('drive_status', '1 if drive_status is present', registry=registry, labelnames=["drive_name", "model", "size", "temperature", "status"])
 
+
+    # collect metrics for items found in results
     try:
         for each_drive, drive_details in results.items():
             g.labels (
@@ -73,8 +87,10 @@ def run_regexes(input_filepath, output_filepath, regex):
 if __name__ == "__main__":
 
     os.chdir("C:\\CrystalDiskInfo8_17_3")
+
+    # run command to create DiskInfo.txt
     os.system("DiskInfo64.exe /CopyExit")
-    diskinfo = r"C:\CrystalDiskInfo8_17_3\DiskInfo.txt"
+    diskinfo = "C:\\CrystalDiskInfo8_17_3\\DiskInfo.txt"
 
     path = Path(diskinfo)
     if path.is_file():
@@ -82,7 +98,8 @@ if __name__ == "__main__":
     else:
         print(f"\nThe file {diskinfo} does not exist\n")
 
-    output = r"C:\CrystalDiskInfo8_17_3\results.prom"    # only needed if writing to file
+    # .prom file where metrics are shown
+    output = "C:\\CrystalDiskInfo8_17_3\\results.prom"
 
     reg_expr = {
         'Disk': r".*\ Disk.*",
